@@ -1,0 +1,203 @@
+/* ========== Base reset & tokens ========== */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root {
+  --bg: #0f1115;
+  --fg: #f5f7fb;
+  --muted: #98a2b3;
+  --accent: #6ea8fe;
+  --surface: #171a21;
+
+  --radius-lg: 16px;
+  --shadow-lg: 0 10px 30px rgba(0,0,0,.35);
+
+  /* Carousel tokens */
+  --carousel-aspect: 16 / 9;  /* default aspect ratio */
+  --dot-size: 10px;
+  --dot-gap: 10px;
+  --nav-size: 44px;
+  --nav-bg: rgba(0,0,0,.5);
+  --nav-fg: #fff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #ffffff;
+    --fg: #111318;
+    --muted: #667085;
+    --surface: #f2f4f7;
+    --nav-bg: rgba(0,0,0,.45);
+    --nav-fg: #fff;
+  }
+}
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { max-width: 100%; display: block; }
+
+/* Focus visibility for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ========== Layout helpers (optional) ========== */
+.container {
+  width: min(1100px, 92vw);
+  margin-inline: auto;
+}
+
+/* ========== Carousel core ========== */
+/* Wrap element: <div class="carousel" id="heroCarousel"> */
+.carousel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+
+  /* Ensure visible height even before images load */
+  min-block-size: 240px;
+}
+
+/* Inner scroller: <div class="carousel-track"> */
+.carousel-track {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none;            /* Firefox */
+}
+.carousel-track::-webkit-scrollbar { display: none; } /* WebKit */
+
+/* Slides: <div class="carousel-slide"><img ...></div> */
+.carousel-slide {
+  flex: 0 0 100%;
+  position: relative;
+  scroll-snap-align: center;
+  aspect-ratio: var(--carousel-aspect);
+  /* If an image fails to load */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.06)),
+    #222;
+}
+
+/* Images fill and crop neatly */
+.carousel-slide img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ========== Navigation arrows ========== */
+/* Nav container spans the carousel for easy centering */
+.carousel-nav {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;   /* buttons re-enable pointer events */
+  padding-inline: 8px;
+}
+
+.carousel-btn {
+  pointer-events: auto;
+  inline-size: var(--nav-size);
+  block-size: var(--nav-size);
+  border: 0;
+  border-radius: 999px;
+  background: var(--nav-bg);
+  color: var(--nav-fg);
+  font-size: 20px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .15s ease, opacity .15s ease;
+  backdrop-filter: saturate(120%) blur(2px);
+}
+@media (hover: hover) {
+  .carousel-btn:hover { transform: scale(1.06); }
+}
+.carousel-btn:active { transform: scale(.96); }
+.carousel-btn:focus-visible { outline: 2px solid var(--accent); }
+
+/* Hide arrows on very small screens to avoid overlap; swipe still works */
+@media (max-width: 420px) {
+  .carousel-nav { display: none; }
+}
+
+/* ========== Pagination dots ========== */
+.carousel-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--dot-gap);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--bg) 60%, transparent);
+  backdrop-filter: blur(4px);
+}
+
+.carousel-dot {
+  inline-size: var(--dot-size);
+  block-size: var(--dot-size);
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255,255,255,.5);
+  cursor: pointer;
+  transition: transform .15s ease, opacity .15s ease, background-color .15s ease;
+}
+.carousel-dot:where(:hover,:focus-visible) { transform: scale(1.2); }
+.carousel-dot.active { background: #fff; }
+
+/* ========== Responsiveness ========== */
+/* Taller aspect on phones so you actually see content */
+@media (max-width: 640px) {
+  :root { --carousel-aspect: 4 / 3; }
+  .carousel { min-block-size: 220px; }
+}
+
+/* Default widescreen on tablets/desktop */
+@media (min-width: 641px) and (max-width: 1199px) {
+  :root { --carousel-aspect: 16 / 9; }
+}
+
+/* Cinematic on large screens */
+@media (min-width: 1200px) {
+  :root { --carousel-aspect: 21 / 9; }
+}
+
+/* ========== Motion & accessibility ========== */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track { scroll-behavior: auto; }
+  .carousel-btn,
+  .carousel-dot { transition: none; }
+}
+
+/* ========== Optional: hero spacing if used as a masthead ========== */
+.hero {
+  padding-block: clamp(16px, 3vw, 32px);
+}
+
+/* Optional: headings and text defaults */
+h1, h2, h3 { line-height: 1.2; margin: 0 0 .5em; }
+p { margin: 0 0 1em; color: var(--muted); }
