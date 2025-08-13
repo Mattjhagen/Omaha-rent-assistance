@@ -16,6 +16,11 @@
     *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
     a{color:var(--brand-2);text-decoration:none}
 
+    <link rel="preload" as="image" href="public/assets/irony1.jpg">
+<link rel="preload" as="image" href="public/assets/rain.png">
+<link rel="preload" as="image" href="public/assets/elder.jpg">
+<link rel="preload" as="image" href="public/assets/skyline.png">
+
     /* Header Carousel */
     header.hero{position:relative;min-height:92vh;display:grid;place-items:center;overflow:hidden;color:#fff}
     .slides{position:absolute;inset:0;display:grid}
@@ -73,15 +78,14 @@
 </head>
 <body>
   <header class="hero" aria-label="Image carousel with call to action">
-    <div class="slides" id="slides">
-      <!-- NOTE: Place images at /public/assets or adjust paths accordingly. Spaces are URL-encoded. -->
-      <div class="slide active" style="background-image:url('assets/ironic-help.jpg')" role="img" aria-label="Community leader speaking about homelessness in Omaha"></div>
-      <div class="slide" style="background-image:url('assets/eldermanhomelessness.jpg')" role="img" aria-label="Help available sign juxtaposed with rain"></div>
-      <div class="slide" style="background-image:url('assets/Omaha Help Available Irony.png')" role="img" aria-label="Animated Omaha skyline at dusk"></div>
-      <div class="slide" style="background-image:url('assets/Animated Omaha Skyline.png')" role="img" aria-label="Omaha skyline in rain"></div>
-      <div class="slide" style="background-image:url('assets/Animated Omaha Skyline rain.png')" role="img" aria-label="Omaha skyline in rain"></div>
-    </div>
+    
     <div class="scrim" aria-hidden="true"></div>
+    <div class="slides" id="slides">
+  <div class="slide active" style="background-image:url('public/assets/irony1.jpg')"></div>
+  <div class="slide" style="background-image:url('public/assets/rain.png')"></div>
+  <div class="slide" style="background-image:url('public/assets/elder.jpg')"></div>
+  <div class="slide" style="background-image:url('public/assets/skyline.png')"></div>
+</div>
 
     <div class="hero-content">
       <span class="eyebrow">A Heart-Led Movement</span>
