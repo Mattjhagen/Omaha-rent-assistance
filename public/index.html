@@ -22,6 +22,102 @@
 <link rel="preload" as="image" href="/public/assets/elder.jpg">
 <link rel="preload" as="image" href="/public/assets/skyline.png">
 
+    <style>
+  .carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .carousel-track {
+    display: flex;
+    scroll-snap-type: x mandatory;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    position: relative;
+    aspect-ratio: 16 / 9; /* ensures height */
+    background: #222;
+  }
+  .carousel-slide img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .carousel-nav {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+    pointer-events: none; padding: 0 8px;
+  }
+  .carousel-btn {
+    pointer-events: all; border: 0; background: rgba(0,0,0,.5); color: #fff; width: 44px; height: 44px;
+    border-radius: 999px; font-size: 20px; line-height: 44px; cursor: pointer;
+  }
+  .carousel-dots {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px;
+  }
+  .carousel-dot {
+    width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.5); border: 0;
+  }
+  .carousel-dot.active { background: #fff; }
+</style>
+
+<div class="carousel" id="heroCarousel">
+  <div class="carousel-track" aria-label="Image carousel">
+    <div class="carousel-slide"><img src="/public/assets/irony1.jpg" alt="Homelessness poses profound mental and emotional strains."></div>
+    <div class="carousel-slide"><img src="/public/assets/rain.png" alt="Direct-to-housing placement"></div>
+    <div class="carousel-slide"><img src="/public/assets/elder.jpg" alt="In 2024, there were 32,882 homeless veterans in the U.S."></div>
+    <div class="carousel-slide"><img src="/public/assets/skyline.png" alt="Fedral law is aiming to criminalize homelessness"></div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" data-dir="-1" aria-label="Previous slide">‹</button>
+    <button class="carousel-btn" data-dir="1" aria-label="Next slide">›</button>
+  </div>
+  <div class="carousel-dots" aria-hidden="true"></div>
+</div>
+
+<script>
+(function () {
+  const root = document.getElementById('heroCarousel');
+  const track = root.querySelector('.carousel-track');
+  const slides = Array.from(root.querySelectorAll('.carousel-slide'));
+  const dotsWrap = root.querySelector('.carousel-dots');
+  const prev = root.querySelector('[data-dir="-1"]');
+  const next = root.querySelector('[data-dir="1"]');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    b.addEventListener('click', () => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }));
+    dotsWrap.appendChild(b);
+  });
+
+  const dots = Array.from(root.querySelectorAll('.carousel-dot'));
+  function updateDots() {
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  track.addEventListener('scroll', () => requestAnimationFrame(updateDots));
+
+  function go(dir) {
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    const nextIdx = Math.max(0, Math.min(slides.length - 1, idx + dir));
+    track.scrollTo({ left: nextIdx * track.clientWidth, behavior: 'smooth' });
+  }
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+
+  // Resize handler keeps slide widths aligned
+  window.addEventListener('resize', () => {
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    track.scrollTo({ left: idx * track.clientWidth });
+  });
+})();
+</script>
+
+
     /* Header Carousel */
     header.hero{position:relative;min-height:92vh;display:grid;place-items:center;overflow:hidden;color:#fff}
     .slides{position:absolute;inset:0;display:grid}
