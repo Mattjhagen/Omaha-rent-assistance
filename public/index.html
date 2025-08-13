@@ -131,6 +131,28 @@
             animation: slideUp 1.2s ease-out 0.6s both;
         }
 
+        .donate-now-header-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); /* Gold to Orange */
+            color: var(--deep-blue);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: slideUp 1.2s ease-out 0.9s both;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .donate-now-header-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
         .scroll-indicator {
             position: absolute;
             bottom: 2rem;
@@ -809,6 +831,7 @@
             <h1>Building Dreams</h1>
             <p class="subtitle">One Home at a Time in Omaha</p>
             <p class="location">Transforming Lives Through Affordable Housing Solutions</p>
+            <button class="donate-now-header-btn" id="donate-now-header-btn">Donate Now</button>
         </div>
         <div class="scroll-indicator">
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -1114,8 +1137,32 @@
                 selectedAmount = parseInt(this.value) || 0;
             });
 
-            // Donation process
+            // Donation process (existing button)
             document.getElementById('donate-button').addEventListener('click', handleDonation);
+
+            // New "Donate Now" button in header
+            document.getElementById('donate-now-header-btn').addEventListener('click', async () => {
+                const amount = 50; // Default donation amount for direct checkout, or prompt user
+                try {
+                    const response = await fetch('/api/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ amount: amount }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to create checkout session');
+                    }
+
+                    const { url } = await response.json();
+                    window.location.href = url; // Redirect to Stripe Checkout
+                } catch (error) {
+                    console.error('Error initiating Stripe Checkout:', error);
+                    alert('Could not initiate payment. Please try again later.');
+                }
+            });
 
             // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {

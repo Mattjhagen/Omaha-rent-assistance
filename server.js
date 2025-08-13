@@ -131,6 +131,41 @@ app.post('/api/payment-success', async (req, res) => {
   }
 });
 
+// Create Stripe Checkout Session
+app.post('/api/create-checkout-session', async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount || amount < 1) {
+      return res.status(400).json({ error: 'Invalid amount. Minimum donation is $1.' });
+    }
+
+    const session = await stripeClient.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Omaha Housing Initiative Donation',
+            },
+            unit_amount: amount * 100, // amount in cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: `${req.protocol}://${req.get('host')}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.protocol}://${req.get('host')}/cancel.html`,
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).json({ error: 'Unable to create checkout session' });
+  }
+});
+
 // Health check endpoint for Render
 app.get('/health', (req, res) => {
   res.json({ 
