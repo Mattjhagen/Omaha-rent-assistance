@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: omaha-housing-initiative
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: STRIPE_SECRET_KEY
+        sync: false  # This will be set manually in Render dashboard
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false  # This will be set manually in Render dashboard

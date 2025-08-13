@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omaha Housing Initiative | Building Dreams, One Home at a Time</title>
+    <meta name="description" content="Join the Omaha Housing Initiative to build affordable housing solutions for our community. Every donation helps families find stable, affordable homes in Omaha, Nebraska.">
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --deep-blue: #004080;
+            --accent-blue: #3399ff;
+            --light-blue: #e6f2ff;
+            --success-green: #00cc66;
+            --dark-green: #009944;
+            --warning-orange: #ff9900;
+            --text-dark: #1a1a1a;
+            --text-medium: #4d4d4d;
+            --text-light: #737373;
+            --bg-light: #fafbfc;
+            --bg-white: #ffffff;
+            --border-light: #e1e5e9;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.16);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 50%, var(--accent-blue) 100%);
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .header {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            padding: 0 2rem;
+            animation: slideUp 1.2s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: slideUp 1.2s ease-out 0.3s both;
+        }
+
+        .header .location {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 400;
+            animation: slideUp 1.2s ease-out 0.6s both;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Glass morphism progress section */
+        .progress-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            margin: -6rem auto 4rem;
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            transform: translateY(0);
+            animation: slideUp 1s ease-out 0.8s both;
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .progress-amount {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--success-green) 0%, var(--dark-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .progress-goal {
+            color: var(--text-medium);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background: var(--border-light);
+            height: 20px;
+            border-radius: 50px;
+            overflow: hidden;
+            margin: 2rem 0;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, var(--success-green) 0%, var(--dark-green) 50%, var(--success-green) 100%);
+            height: 100%;
+            border-radius: 50px;
+            width: 0%;
+            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-white);
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-medium);
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 4rem;
+            margin: 4rem auto;
+            align-items: start;
+        }
+
+        .content-section {
+            background: var(--bg-white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-section:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+
+        .content-section h2 {
+            color: var(--text-dark);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .content-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
+            border-radius: 2px;
+        }
+
+        .campaign-goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .goal-item > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .goal-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .goal-item:hover .goal-amount {
+            color: white;
+        }
+
+        .goal-description {
+            color: var(--text-medium);
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        .goal-item:hover .goal-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Sticky sidebar */
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .donation-box {
+            background: var(--bg-white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-light);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .donation-box:hover {
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .donation-box h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .donation-amounts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .amount-btn {
+            padding: 1rem;
+            border: 2px solid var(--border-light);
+            background: var(--bg-white);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .amount-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .amount-btn:hover {
+            border-color: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .amount-btn:hover::before,
+        .amount-btn.active::before {
+            left: 0;
+        }
+
+        .amount-btn.active {
+            border-color: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .custom-amount {
+            margin: 2rem 0;
+        }
+
+        .custom-amount input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+        }
+
+        .custom-amount input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .donate-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--success-green) 0%, var(--dark-green) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .donate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--dark-green), var(--success-green));
+            transition: left 0.3s ease;
+        }
+
+        .donate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 204, 102, 0.3);
+        }
+
+        .donate-btn:hover::before {
+            left: 0;
+        }
+
+        .donate-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .donate-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Impact section with parallax effect */
+        .impact-section {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 50%, var(--accent-blue) 100%);
+            color: white;
+            padding: 6rem 0;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .impact-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .impact-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .impact-header h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .impact-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .impact-item {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .impact-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .impact-item:hover::before {
+            opacity: 1;
+        }
+
+        .impact-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e6f2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .impact-label {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimony-section {
+            background: var(--bg-white);
+            padding: 4rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-light);
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+            margin: 2rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #f0f8ff 100%);
+            border-radius: 16px;
+            border-left: 4px solid var(--primary-blue);
+            position: relative;
+        }
+
+        .quote::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary-blue);
+            position: absolute;
+            top: -1rem;
+            left: 1rem;
+            font-weight: 700;
+            opacity: 0.7;
+        }
+
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .contact-info {
+            margin-top: 1rem;
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, var(--success-green), var(--dark-green));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .sidebar {
+                position: relative;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .progress-section {
+                margin: -4rem auto 3rem;
+                padding: 2rem;
+            }
+
+            .donation-amounts {
+                grid-template-columns: 1fr;
+            }
+
+            .campaign-goals {
+                grid-template-columns: 1fr;
+            }
+
+            .impact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .content-section {
+                padding: 2rem;
+            }
+
+            .donation-box {
+                padding: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Security badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: var(--light-blue);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        /* Shake animation for validation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="hero-bg"></div>
+        <div class="header-content">
+            <h1>Building Dreams</h1>
+            <p class="subtitle">One Home at a Time in Omaha</p>
+            <p class="location">Transforming Lives Through Affordable Housing Solutions</p>
+        </div>
+        <div class="scroll-indicator">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l-8 8h6v12h4V10h6l-8-8z" transform="rotate(180 12 12)"/>
+            </svg>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="progress-section fade-in">
+            <div class="progress-header">
+                <div class="progress-amount" id="current-amount">$0</div>
+                <div class="progress-goal">of $1,000,000 goal</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-number" id="donor-count">0</div>
+                    <div class="stat-label">Amazing Donors</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="days-left">365</div>
+                    <div class="stat-label">Days Remaining</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="families-helped">0</div>
+                    <div class="stat-label">Families to Impact</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <main>
+                <section class="content-section fade-in">
+                    <h2>Our Mission</h2>
+                    <p>The Omaha Housing Initiative represents hope for hundreds of families facing housing instability in our community. While our city invests in long-term solutions, we're here to provide immediate relief and innovative pathways to homeownership.</p>
+                    
+                    <p>Every dollar you contribute directly impacts real families, providing not just shelter, but stability, dignity, and the foundation for building better futures right here in Omaha.</p>
+                    
+                    <div class="campaign-goals">
+                        <div class="goal-item">
+                            <div class="goal-amount">$400,000</div>
+                            <div class="goal-description">Emergency Housing Fund - Preventing evictions and providing immediate housing stability for families in crisis</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-amount">$300,000</div>
+                            <div class="goal-description">Homeownership Dreams - Down payment assistance and financial counseling to help families buy their first home</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-amount">$200,000</div>
+                            <div class="goal-description">Innovation Lab - Pilot projects for tiny homes, ADUs, and creative housing solutions</div>
+                        </div>
+                        <div class="goal-item">
+                            <div class="goal-amount">$100,000</div>
+                            <div class="goal-description">Operations & Impact - Ensuring transparent, efficient delivery of every dollar donated</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="content-section fade-in">
+                    <h2>Why Omaha Needs This Now</h2>
+                    <p>Housing costs in Omaha have surged while wages haven't kept pace. Working families - teachers, healthcare workers, service industry employees - are being priced out of stable housing. This isn't about homelessness; it's about the invisible struggle of families choosing between rent and groceries, between staying in Omaha or leaving the community they call home.</p>
+                    
+                    <p>While Mayor Ewing's administration has committed significant resources to housing development along the streetcar corridor, there's an immediate gap that community action can fill. That's where we come in - bridging the gap between crisis and long-term solutions.</p>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="donation-box fade-in">
+                    <h3>Make Your Impact Today</h3>
+                    <div class="donation-amounts">
+                        <button class="amount-btn" data-amount="25">$25</button>
+                        <button class="amount-btn" data-amount="50">$50</button>
+                        <button class="amount-btn" data-amount="100">$100</button>
+                        <button class="amount-btn" data-amount="250">$250</button>
+                        <button class="amount-btn" data-amount="500">$500</button>
+                        <button class="amount-btn" data-amount="1000">$1,000</button>
+                    </div>
+                    <div class="custom-amount">
+                        <input type="number" id="custom-amount" placeholder="Enter custom amount" min="1">
+                    </div>
+                    <button class="donate-btn" id="donate-button">
+                        <span>Donate Securely Now</span>
+                    </button>
+                    <div class="loading" id="loading">Processing your generous donation...</div>
+                    <div class="success-message" id="success-message">
+                        🏠 Thank you! Your generosity is changing lives in Omaha.
+                    </div>
+                    <div class="error-message" id="error-message">
+                        Payment failed. Please try again or contact support.
+                    </div>
+                    <div class="security-badge">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+                        </svg>
+                        Secure payments by Stripe
+                    </div>
+                </div>
+
+                <div class="donation-box fade-in">
+                    <h3>Get in Touch</h3>
+                    <div style="line-height: 1.8;">
+                        <p><strong>📧 Email:</strong><br>housing@pacmacmobile.com</p>
+                        <p><strong>📞 Phone:</strong><br>402.915.1434</p>
+                        <p><strong>📍 Address:</strong><br>1402 Jones Street<br>Omaha, NE 68901</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <section class="impact-section">
+        <div class="container impact-content">
+            <div class="impact-header fade-in">
+                <h2>Your Dollar's Journey</h2>
+                <p>See exactly how your contribution transforms lives in our community</p>
+            </div>
+            
+            <div class="impact-grid">
+                <div class="impact-item fade-in">
+                    <div class="impact-number">200+</div>
+                    <div class="impact-label">Families Housed</div>
+                </div>
+                <div class="impact-item fade-in">
+                    <div class="impact-number">50+</div>
+                    <div class="impact-label">New Homeowners</div>
+                </div>
+                <div class="impact-item fade-in">
+                    <div class="impact-number">25+</div>
+                    <div class="impact-label">Housing Units Built</div>
+                </div>
+                <div class="impact-item fade-in">
+                    <div class="impact-number">$3M+</div>
+                    <div class="impact-label">Additional Funding Leveraged</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimony-section container fade-in">
+        <h2>A Personal Story</h2>
+        <p>Housing instability doesn't discriminate. It affects working families, single parents, veterans, and young adults just starting their careers. Behind every statistic is a human story of resilience, hope, and the fundamental need for a place to call home.</p>
+        
+        <div class="quote">
+            When you're worried about where you'll sleep next month, everything else becomes impossible. Your job performance suffers. Your kids' education suffers. Your health suffers. This initiative isn't just about housing - it's about restoring hope and giving families the foundation they need to thrive in Omaha.
+        </div>
+        
+        <p>This campaign was born from witnessing firsthand how housing challenges create ripple effects that touch every aspect of life. But it was also born from seeing the incredible strength of our Omaha community when we come together to solve problems. Your support today becomes someone else's new beginning tomorrow.</p>
+        
+        <p>Every family deserves stability. Every child deserves a safe place to do homework. Every working adult deserves housing they can afford without sacrificing other necessities. Together, we can make that a reality for more families in our city.</p>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Omaha Housing Initiative | A PacMac Mobile LLC Community Impact Project</p>
+            <div class="contact-info">
+                <p>Building stronger communities, one home at a time</p>
+                <p>1402 Jones Street | Omaha, NE 68901 | 402.915.1434</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Stripe (will be set from environment variable)
+        let stripe;
+        let selectedAmount = 0;
+        let campaignData = {
+            currentAmount: 0,
+            goal: 1000000,
+            donorCount: 0,
+            familiesHelped: 0
+        };
+
+        // Initialize the application
+        async function initializeApp() {
+            try {
+                // Get Stripe publishable key and campaign data from server
+                const response = await fetch('/api/campaign-stats');
+                const data = await response.json();
+                campaignData = data;
+                
+                // Initialize Stripe (publishable key will be injected by server)
+                stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}'); // This will be replaced by server
+                
+                updateProgress();
+                setupEventListeners();
+                setupScrollAnimations();
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+            }
+        }
+
+        // Set up scroll animations
+        function setupScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Update progress display with animations
+        function updateProgress() {
+            const percentage = Math.min((campaignData.currentAmount / campaignData.goal) * 100, 100);
+            
+            // Animate the current amount
+            const currentAmountEl = document.getElementById('current-amount');
+            const targetAmount = campaignData.currentAmount;
+            let currentDisplayAmount = 0;
+            const increment = targetAmount / 100;
+            
+            const countUp = setInterval(() => {
+                currentDisplayAmount += increment;
+                if (currentDisplayAmount >= targetAmount) {
+                    currentDisplayAmount = targetAmount;
+                    clearInterval(countUp);
+                }
+                currentAmountEl.textContent = 'item {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--bg-white) 0%, #f8fafc 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .goal-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .goal-item:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-heavy);
+            color: white;
+        }
+
+        .goal-item:hover::before {
+            opacity: 1;
+        }
+
+        .goal- + Math.floor(currentDisplayAmount).toLocaleString();
+            }, 20);
+            
+            // Animate progress bar
+            setTimeout(() => {
+                document.getElementById('progress-fill').style.width = percentage + '%';
+            }, 500);
+            
+            // Update other stats
+            document.getElementById('donor-count').textContent = campaignData.donorCount;
+            document.getElementById('families-helped').textContent = campaignData.familiesHelped;
+            
+            // Calculate and display days left (assuming 1 year campaign)
+            const startDate = new Date('2025-08-13');
+            const endDate = new Date('2026-08-13');
+            const today = new Date();
+            const daysLeft = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
+            document.getElementById('days-left').textContent = daysLeft;
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Donation amount selection
+            document.querySelectorAll('.amount-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedAmount = parseInt(this.dataset.amount);
+                    document.getElementById('custom-amount').value = '';
+                    
+                    // Add celebration effect
+                    this.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            document.getElementById('custom-amount').addEventListener('input', function() {
+                document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+                selectedAmount = parseInt(this.value) || 0;
+            });
+
+            // Donation process
+            document.getElementById('donate-button').addEventListener('click', handleDonation);
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Parallax effect for impact section
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const impactSection = document.querySelector('.impact-section');
+                if (impactSection) {
+                    const rate = scrolled * -0.2;
+                    impactSection.style.transform = `translateY(${rate}px)`;
+                }
+            });
+        }
+
+        // Handle donation process
+        async function handleDonation() {
+            if (selectedAmount < 1) {
+                // Shake effect for validation
+                const button = document.getElementById('donate-button');
+                button.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    button.style.animation = '';
+                }, 500);
+                
+                const amountButtons = document.querySelector('.donation-amounts');
+                amountButtons.style.border = '2px solid #ff6b6b';
+                setTimeout(() => {
+                    amountButtons.style.border = '';
+                }, 2000);
+                return;
+            }
+
+            const button = document.getElementById('donate-button');
+            const loading = document.getElementById('loading');
+            const success = document.getElementById('success-message');
+            const error = document.getElementById('error-message');
+
+            button.disabled = true;
+            loading.classList.add('show');
+            success.classList.remove('show');
+            error.classList.remove('show');
+
+            try {
+                // Create payment intent
+                const response = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: selectedAmount * 100, // Convert to cents
+                        currency: 'usd'
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create payment intent');
+                }
+
+                const { clientSecret } = await response.json();
+
+                // Confirm payment with Stripe
+                const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: {
+                            // This would be your card element in a real implementation
+                        }
+                    }
+                });
+
+                if (stripeError) {
+                    throw new Error(stripeError.message);
+                }
+
+                // Payment succeeded
+                if (paymentIntent.status === 'succeeded') {
+                    // Update campaign stats
+                    const successResponse = await fetch('/api/payment-success', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            paymentIntentId: paymentIntent.id,
+                            amount: paymentIntent.amount
+                        }),
+                    });
+
+                    if (successResponse.ok) {
+                        const data = await successResponse.json();
+                        campaignData = data.campaignData;
+                        updateProgress();
+                        
+                        success.classList.add('show');
+                        createConfetti();
+                item {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--bg-white) 0%, #f8fafc 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .goal-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .goal-item:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-heavy);
+            color: white;
+        }
+
+        .goal-item:hover::before {
+            opacity: 1;
+        }
+
+        .goal-
