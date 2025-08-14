@@ -872,7 +872,7 @@
                     <p>The Omaha Housing Initiative represents hope for hundreds of families facing housing instability in our community. While our city invests in long-term solutions, we're here to provide immediate relief and innovative pathways to homeownership.</p>
                     
                     <p>Every dollar you contribute directly impacts real families, providing not just shelter, but stability, dignity, and the foundation for building better futures right here in Omaha.</p>
-                    
+                </div>
                     <div class="campaign-goals">
                         <div class="goal-item">
                             <div class="goal-amount">$400,000</div>
@@ -1047,72 +1047,45 @@
         }
 
         // Update progress display with animations
-        function updateProgress() {
-            const percentage = Math.min((campaignData.currentAmount / campaignData.goal) * 100, 100);
-            
-            // Animate the current amount
-            const currentAmountEl = document.getElementById('current-amount');
-            const targetAmount = campaignData.currentAmount;
-            let currentDisplayAmount = 0;
-            const increment = targetAmount / 100;
-            
-            const countUp = setInterval(() => {
-                currentDisplayAmount += increment;
-                if (currentDisplayAmount >= targetAmount) {
-                    currentDisplayAmount = targetAmount;
-                    clearInterval(countUp);
-                }
-                currentAmountEl.textContent = 'item {
-            padding: 2.5rem;
-            background: linear-gradient(135deg, var(--bg-white) 0%, #f8fafc 100%);
-            border-radius: 16px;
-            border: 1px solid var(--border-light);
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
+<script>
+// ... keep everything above as-is
 
-        .goal-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+function updateProgress() {
+  const percentage = Math.min((campaignData.currentAmount / campaignData.goal) * 100, 100);
 
-        .goal-item:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-heavy);
-            color: white;
-        }
+  // Animate the current amount
+  const currentAmountEl = document.getElementById('current-amount');
+  const targetAmount = campaignData.currentAmount;
+  let currentDisplayAmount = 0;
+  const increment = Math.max(1, Math.floor(targetAmount / 100));
 
-        .goal-item:hover::before {
-            opacity: 1;
-        }
+  const countUp = setInterval(() => {
+    currentDisplayAmount += increment;
+    if (currentDisplayAmount >= targetAmount) {
+      currentDisplayAmount = targetAmount;
+      clearInterval(countUp);
+    }
+    currentAmountEl.textContent = '$' + Math.floor(currentDisplayAmount).toLocaleString();
+  }, 20);
 
-        .goal- + Math.floor(currentDisplayAmount).toLocaleString();
-            }, 20);
-            
-            // Animate progress bar
-            setTimeout(() => {
-                document.getElementById('progress-fill').style.width = percentage + '%';
-            }, 500);
-            
-            // Update other stats
-            document.getElementById('donor-count').textContent = campaignData.donorCount;
-            document.getElementById('families-helped').textContent = campaignData.familiesHelped;
-            
-            // Calculate and display days left (assuming 1 year campaign)
-            const startDate = new Date('2025-08-13');
-            const endDate = new Date('2026-08-13');
-            const today = new Date();
-            const daysLeft = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
-            document.getElementById('days-left').textContent = daysLeft;
-        }
+  // Animate progress bar
+  setTimeout(() => {
+    document.getElementById('progress-fill').style.width = percentage + '%';
+  }, 500);
+
+  // Update other stats
+  document.getElementById('donor-count').textContent = campaignData.donorCount;
+  document.getElementById('families-helped').textContent = campaignData.familiesHelped;
+
+  // Days left (assumes a 1‑year campaign)
+  const startDate = new Date('2025-08-13');
+  const endDate = new Date('2026-08-13');
+  const today = new Date();
+  const daysLeft = Math.max(0, Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)));
+  document.getElementById('days-left').textContent = daysLeft;
+}
+</script>
+
 
         // Set up event listeners
         function setupEventListeners() {
