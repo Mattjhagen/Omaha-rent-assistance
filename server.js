@@ -30,6 +30,39 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Stripe webhook endpoint
+app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error(`❌ Error message: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      const amount = session.amount_total / 100; // Convert from cents
+      campaignData.currentAmount += amount;
+      campaignData.donorCount += 1;
+      campaignData.familiesHelped = Math.floor(campaignData.currentAmount / 2500);
+      console.log(`✅ New donation: ${amount} - Total: ${campaignData.currentAmount}`);
+      break;
+    default:
+      // Unexpected event type
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.json({received: true});
+});
+
+
 // In-memory storage for demo (use a database in production)
 let campaignData = {
   currentAmount: 12750,
@@ -57,42 +90,7 @@ app.get('/api/campaign-stats', (req, res) => {
 });
 
 // Create payment intent
-app.post('/api/create-payment-intent', async (req, res) => {
-  try {
-    const { amount, currency = 'usd' } = req.body;
 
-    // Validate amount
-    if (!amount || amount < 50) { // Minimum $0.50
-      return res.status(400).json({ 
-        error: 'Invalid amount. Minimum donation is $0.50' 
-      });
-    }
-
-    // Create payment intent
-    const paymentIntent = await stripeClient.paymentIntents.create({
-      amount: Math.round(amount), // Amount in cents
-      currency: currency,
-      metadata: {
-        campaign: 'omaha-housing-initiative',
-        timestamp: new Date().toISOString()
-      },
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
-
-    res.json({
-      clientSecret: paymentIntent.client_secret,
-      amount: paymentIntent.amount
-    });
-
-  } catch (error) {
-    console.error('Error creating payment intent:', error);
-    res.status(500).json({ 
-      error: 'Unable to create payment intent' 
-    });
-  }
-});
 
 // Handle successful payment
 app.post('/api/payment-success', async (req, res) => {

@@ -12,3 +12,5 @@ services:
         sync: false  # This will be set manually in Render dashboard
       - key: STRIPE_PUBLISHABLE_KEY
         sync: false  # This will be set manually in Render dashboard
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false # This will be set manually in Render dashboard

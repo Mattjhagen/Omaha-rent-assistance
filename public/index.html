@@ -1,913 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omaha Housing Initiative | Building Dreams, One Home at a Time</title>
-    <meta name="description" content="Join the Omaha Housing Initiative to build affordable housing solutions for our community. Every donation helps families find stable, affordable homes in Omaha, Nebraska.">
-    <script src="https://js.stripe.com/v3/"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Omaha Affordable Housing | All-In for Our Neighbors</title>
+  <meta name="description" content="Join a heart-led movement to end housing instability in Omaha. Your gift moves a family from the edge to home." />
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    :root{
+      --ink:#0f172a;--muted:#475569;--brand:#0ea5e9;--brand-2:#2563eb;--good:#16a34a;--bg:#f8fafc;--card:#ffffff;--ring:rgba(37,99,235,.2);
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+    a{color:var(--brand-2);text-decoration:none}
+
+<link rel="preload" as="image" href="/public/assets/irony1.jpg">
+<link rel="preload" as="image" href="/public/assets/rain.png">
+<link rel="preload" as="image" href="/public/assets/elder.jpg">
+<link rel="preload" as="image" href="/public/assets/skyline.png">
+
     <style>
-        :root {
-            --primary-blue: #0066cc;
-            --deep-blue: #004080;
-            --accent-blue: #3399ff;
-            --light-blue: #e6f2ff;
-            --success-green: #00cc66;
-            --dark-green: #009944;
-            --warning-orange: #ff9900;
-            --text-dark: #1a1a1a;
-            --text-medium: #4d4d4d;
-            --text-light: #737373;
-            --bg-light: #fafbfc;
-            --bg-white: #ffffff;
-            --border-light: #e1e5e9;
-            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
-            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
-            --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.16);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.7;
-            color: var(--text-dark);
-            background: var(--bg-light);
-            overflow-x: hidden;
-        }
-
-        /* Animated background */
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--deep-blue) 50%, var(--accent-blue) 100%);
-            overflow: hidden;
-        }
-
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(1deg); }
-        }
-
-        .header {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 2;
-            max-width: 900px;
-            padding: 0 2rem;
-            animation: slideUp 1.2s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(60px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.1;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            letter-spacing: -0.02em;
-        }
-
-        .header .subtitle {
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            font-weight: 300;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            animation: slideUp 1.2s ease-out 0.3s both;
-        }
-
-        .header .location {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            font-weight: 400;
-            animation: slideUp 1.2s ease-out 0.6s both;
-        }
-
-        .donate-now-header-btn {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: var(--deep-blue);
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 2.5rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            animation: slideUp 1.2s ease-out 0.9s both;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .donate-now-header-btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            opacity: 0.7;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        /* Glass morphism progress section */
-        .progress-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            margin: -6rem auto 4rem;
-            padding: 3rem;
-            border-radius: 24px;
-            box-shadow: var(--shadow-heavy);
-            position: relative;
-            z-index: 10;
-            max-width: 900px;
-            transform: translateY(0);
-            animation: slideUp 1s ease-out 0.8s both;
-        }
-
-        .progress-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .progress-amount {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--success-green) 0%, var(--dark-green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .progress-goal {
-            color: var(--text-medium);
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-
-        .progress-bar {
-            background: var(--border-light);
-            height: 20px;
-            border-radius: 50px;
-            overflow: hidden;
-            margin: 2rem 0;
-            position: relative;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .progress-fill {
-            background: linear-gradient(135deg, var(--success-green) 0%, var(--dark-green) 50%, var(--success-green) 100%);
-            height: 100%;
-            border-radius: 50px;
-            width: 0%;
-            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .progress-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .stat {
-            text-align: center;
-            padding: 2rem;
-            background: var(--bg-white);
-            border-radius: 16px;
-            border: 1px solid var(--border-light);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .stat:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .stat:hover::before {
-            transform: scaleX(1);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: var(--text-medium);
-            font-weight: 500;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 4rem;
-            margin: 4rem auto;
-            align-items: start;
-        }
-
-        .content-section {
-            background: var(--bg-white);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: var(--shadow-light);
-            border: 1px solid var(--border-light);
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .content-section:hover {
-            box-shadow: var(--shadow-medium);
-            transform: translateY(-2px);
-        }
-
-        .content-section h2 {
-            color: var(--text-dark);
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 1rem;
-        }
-
-        .content-section h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
-            border-radius: 2px;
-        }
-
-        .campaign-goals {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .goal-item {
-            padding: 2.5rem;
-            background: linear-gradient(135deg, var(--bg-white) 0%, #f8fafc 100%);
-            border-radius: 16px;
-            border: 1px solid var(--border-light);
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
-
-        .goal-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .goal-item:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-heavy);
-            color: white;
-        }
-
-        .goal-item:hover::before {
-            opacity: 1;
-        }
-
-        .goal-item > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        .goal-amount {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .goal-item:hover .goal-amount {
-            color: rgba(255, 255, 255, 0.95);
-        }
-
-        .goal-description {
-            color: var(--text-medium);
-            font-size: 1rem;
-            line-height: 1.6;
-            transition: color 0.3s ease;
-        }
-
-        .goal-item:hover .goal-description {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* Sticky sidebar */
-        .sidebar {
-            position: sticky;
-            top: 2rem;
-            height: fit-content;
-        }
-
-        .donation-box {
-            background: var(--bg-white);
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid var(--border-light);
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .donation-box:hover {
-            box-shadow: var(--shadow-heavy);
-        }
-
-        .donation-box h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .donation-amounts {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .amount-btn {
-            padding: 1rem;
-            border: 2px solid var(--border-light);
-            background: var(--bg-white);
-            color: var(--text-dark);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .amount-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--accent-blue), var(--primary-blue));
-            transition: left 0.3s ease;
-            z-index: -1;
-        }
-
-        .amount-btn:hover {
-            border-color: var(--primary-blue);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-light);
-        }
-
-        .amount-btn:hover::before,
-        .amount-btn.active::before {
-            left: 0;
-        }
-
-        .amount-btn.active {
-            border-color: var(--primary-blue);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-light);
-        }
-
-        .custom-amount {
-            margin: 2rem 0;
-        }
-
-        .custom-amount input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--border-light);
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            background: var(--bg-white);
-        }
-
-        .custom-amount input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        .donate-btn {
-            width: 100%;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, var(--success-green) 0%, var(--dark-green) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-top: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .donate-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--dark-green), var(--success-green));
-            transition: left 0.3s ease;
-        }
-
-        .donate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 204, 102, 0.3);
-        }
-
-        .donate-btn:hover::before {
-            left: 0;
-        }
-
-        .donate-btn:disabled {
-            background: var(--text-light);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .donate-btn span {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Impact section with parallax effect */
-        .impact-section {
-            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--primary-blue) 50%, var(--accent-blue) 100%);
-            color: white;
-            padding: 6rem 0;
-            margin: 4rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .impact-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
-            animation: float 15s ease-in-out infinite;
-        }
-
-        .impact-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .impact-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .impact-header h2 {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-        }
-
-        .impact-header p {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .impact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-        }
-
-        .impact-item {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .impact-item::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .impact-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .impact-item:hover::before {
-            opacity: 1;
-        }
-
-        .impact-number {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #ffffff 0%, #e6f2ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-        }
-
-        .impact-label {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
-        }
-
-        .testimony-section {
-            background: var(--bg-white);
-            padding: 4rem;
-            border-radius: 24px;
-            box-shadow: var(--shadow-light);
-            border: 1px solid var(--border-light);
-            margin: 4rem 0;
-            position: relative;
-        }
-
-        .quote {
-            font-style: italic;
-            font-size: 1.3rem;
-            line-height: 1.8;
-            color: var(--text-medium);
-            margin: 2rem 0;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--light-blue) 0%, #f0f8ff 100%);
-            border-radius: 16px;
-            border-left: 4px solid var(--primary-blue);
-            position: relative;
-        }
-
-        .quote::before {
-            content: '"';
-            font-size: 4rem;
-            color: var(--primary-blue);
-            position: absolute;
-            top: -1rem;
-            left: 1rem;
-            font-weight: 700;
-            opacity: 0.7;
-        }
-
-        .footer {
-            background: var(--text-dark);
-            color: white;
-            text-align: center;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .contact-info {
-            margin-top: 1rem;
-            opacity: 0.8;
-            font-size: 1.1rem;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 1rem 0;
-            color: var(--primary-blue);
-            font-weight: 500;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .success-message {
-            background: linear-gradient(135deg, var(--success-green), var(--dark-green));
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            display: none;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .success-message.show {
-            display: block;
-            animation: slideDown 0.5s ease-out;
-        }
-
-        .error-message {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            display: none;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .error-message.show {
-            display: block;
-            animation: slideDown 0.5s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .sidebar {
-                position: relative;
-                order: -1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
-
-            .progress-section {
-                margin: -4rem auto 3rem;
-                padding: 2rem;
-            }
-
-            .donation-amounts {
-                grid-template-columns: 1fr;
-            }
-
-            .campaign-goals {
-                grid-template-columns: 1fr;
-            }
-
-            .impact-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .content-section {
-                padding: 2rem;
-            }
-
-            .donation-box {
-                padding: 2rem;
-            }
-        }
-
-        /* Scroll animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Security badge */
-        .security-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding: 0.8rem;
-            background: var(--light-blue);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: var(--primary-blue);
-            font-weight: 500;
-        }
-
-        /* Shake animation for validation */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-    </style>
+  .carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .carousel-track {
+    display: flex;
+    scroll-snap-type: x mandatory;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    position: relative;
+    aspect-ratio: 16 / 9; /* ensures height */
+    background: #222;
+  }
+  .carousel-slide img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .carousel-nav {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+    pointer-events: none; padding: 0 8px;
+  }
+  .carousel-btn {
+    pointer-events: all; border: 0; background: rgba(0,0,0,.5); color: #fff; width: 44px; height: 44px;
+    border-radius: 999px; font-size: 20px; line-height: 44px; cursor: pointer;
+  }
+  .carousel-dots {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px;
+  }
+  .carousel-dot {
+    width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.5); border: 0;
+  }
+  .carousel-dot.active { background: #fff; }
+</style>
+
+<div class="carousel" id="heroCarousel">
+  <div class="carousel-track" aria-label="Image carousel">
+    <div class="carousel-slide"><img src="/public/assets/irony1.jpg" alt="Homelessness poses profound mental and emotional strains."></div>
+    <div class="carousel-slide"><img src="/public/assets/rain.png" alt="Direct-to-housing placement"></div>
+    <div class="carousel-slide"><img src="/public/assets/elder.jpg" alt="In 2024, there were 32,882 homeless veterans in the U.S."></div>
+    <div class="carousel-slide"><img src="/public/assets/skyline.png" alt="Fedral law is aiming to criminalize homelessness"></div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" data-dir="-1" aria-label="Previous slide">‹</button>
+    <button class="carousel-btn" data-dir="1" aria-label="Next slide">›</button>
+  </div>
+  <div class="carousel-dots" aria-hidden="true"></div>
+</div>
+
+<script>
+(function () {
+  const root = document.getElementById('heroCarousel');
+  const track = root.querySelector('.carousel-track');
+  const slides = Array.from(root.querySelectorAll('.carousel-slide'));
+  const dotsWrap = root.querySelector('.carousel-dots');
+  const prev = root.querySelector('[data-dir="-1"]');
+  const next = root.querySelector('[data-dir="1"]');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    b.addEventListener('click', () => track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }));
+    dotsWrap.appendChild(b);
+  });
+
+  const dots = Array.from(root.querySelectorAll('.carousel-dot'));
+  function updateDots() {
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  track.addEventListener('scroll', () => requestAnimationFrame(updateDots));
+
+  function go(dir) {
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    const nextIdx = Math.max(0, Math.min(slides.length - 1, idx + dir));
+    track.scrollTo({ left: nextIdx * track.clientWidth, behavior: 'smooth' });
+  }
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+
+  // Resize handler keeps slide widths aligned
+  window.addEventListener('resize', () => {
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    track.scrollTo({ left: idx * track.clientWidth });
+  });
+})();
+</script>
+
+
+    /* Header Carousel */
+    header.hero{position:relative;min-height:92vh;display:grid;place-items:center;overflow:hidden;color:#fff}
+    .slides{position:absolute;inset:0;display:grid}
+    .slide{position:absolute;inset:0;background-position:center;background-size:cover;filter:brightness(.65);opacity:0;transition:opacity 900ms ease}
+    .slide.active{opacity:1}
+    .scrim{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 65%, transparent, rgba(0,0,0,.55))}
+    .hero-content{position:relative;z-index:2;max-width:1100px;padding:24px;text-align:center}
+    .eyebrow{display:inline-block;padding:.35rem .65rem;border-radius:999px;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);font-weight:700;letter-spacing:.08em}
+    h1{font-size:clamp(2rem,5vw,4rem);margin:.75rem 0 1rem;font-weight:800}
+    .sub{font-size:clamp(1.05rem,2.5vw,1.35rem);opacity:.95;max-width:900px;margin:0 auto 1.25rem}
+
+    .cta-row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
+    .btn{appearance:none;border:0;border-radius:12px;padding:14px 22px;font-weight:800;cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 12px 24px rgba(37,99,235,.25)}
+    .btn-primary:focus,.btn-primary:hover{outline:0;box-shadow:0 0 0 6px var(--ring),0 12px 24px rgba(2,6,23,.35)}
+    .btn-ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.22)}
+
+    /* Progress Card */
+    .container{max-width:1200px;margin:0 auto;padding:32px 20px}
+    .card{background:var(--card);border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 8px 24px rgba(2,6,23,.06);padding:28px}
+    .progress-wrap{display:grid;gap:16px}
+    .progress{height:14px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+    .bar{height:100%;width:0;background:linear-gradient(90deg,var(--good),#22c55e);transition:width 900ms ease}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .stat{padding:16px;border:1px solid #e2e8f0;border-radius:14px;text-align:center}
+    .kpi{font-size:1.55rem;font-weight:800;color:var(--brand-2)} .label{color:var(--muted);font-weight:600}
+
+    /* Sections */
+    section{margin:42px 0}
+    h2{font-size:clamp(1.4rem,3.5vw,2.25rem);margin:.25rem 0 10px;font-weight:800}
+    p.lead{font-size:1.125rem;color:#0b1324}
+    .grid{display:grid;gap:18px}
+    .goals{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .goal{padding:18px 16px;border:1px dashed #dbe3ef;border-radius:14px;background:#fff}
+    .goal strong{color:var(--brand-2)}
+
+    /* Donation box */
+    aside.donate{position:sticky;top:18px}
+    .amounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+    .chip{padding:10px 12px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;font-weight:700;cursor:pointer;text-align:center}
+    .chip.active{border-color:var(--brand-2);color:var(--brand-2);box-shadow:0 0 0 4px var(--ring)}
+    .field{display:flex;gap:8px}
+    .field input{flex:1;padding:12px 14px;border-radius:12px;border:1px solid #dfe3ea;font-weight:700}
+
+    /* Footer */
+    footer{background:#0b1324;color:#e6edf7;padding:36px 20px;margin-top:56px}
+    .foot{max-width:1200px;margin:0 auto;display:grid;gap:8px}
+    small.cites{opacity:.8}
+
+    @media (max-width: 900px){
+      .stats{grid-template-columns:1fr}
+      .amounts{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
 </head>
 <body>
-    <header class="header">
-        <div class="hero-bg"></div>
-        <div class="header-content">
-            <h1>Building Dreams</h1>
-            <p class="subtitle">One Home at a Time in Omaha</p>
-            <p class="location">Transforming Lives Through Affordable Housing Solutions</p>
-            <button class="donate-now-header-btn" id="donate-now-header-btn">Donate Now</button>
-        </div>
-        <div class="scroll-indicator">
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2l-8 8h6v12h4V10h6l-8-8z" transform="rotate(180 12 12)"/>
-            </svg>
-        </div>
-    </header>
+  <header class="hero" aria-label="Image carousel with call to action">
+    
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="slides" id="slides">
+  <div class="slide active" style="background-image:url('/public/assets/irony1.jpg')"></div>
+  <div class="slide" style="background-image:url('/public/assets/rain.png')"></div>
+  <div class="slide" style="background-image:url('/public/assets/elder.jpg')"></div>
+  <div class="slide" style="background-image:url('/public/assets/skyline.png')"></div>
+</div>
 
-    <div class="container">
-        <div class="progress-section fade-in">
-            <div class="progress-header">
-                <div class="progress-amount" id="current-amount">$0</div>
-                <div class="progress-goal">of $1,000,000 goal</div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <div class="progress-stats">
-                <div class="stat">
-                    <div class="stat-number" id="donor-count">0</div>
-                    <div class="stat-label">Amazing Donors</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" id="days-left">365</div>
-                    <div class="stat-label">Days Remaining</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" id="families-helped">0</div>
-                    <div class="stat-label">Families to Impact</div>
-                </div>
-            </div>
-        </div>
+    <div class="hero-content">
+      <span class="eyebrow">A Heart-Led Movement</span>
+      <h1>Every Neighbor Deserves a Safe Place to Sleep</h1>
+      <p class="sub">Together, we’re building a community where families aren’t punished for poverty and hope is stronger than hardship. Your gift moves a neighbor from the edge to home.</p>
+      <div class="cta-row">
+        <button id="donateNow" class="btn btn-primary">Donate Now</button>
+        <a href="#how" class="btn btn-ghost">See how your gift helps</a>
+      </div>
+    </div>
+  </header>
 
-        <div class="main-content">
-            <main>
-                <section class="content-section fade-in">
-                    <h2>Our Mission</h2>
-                    <p>The Omaha Housing Initiative represents hope for hundreds of families facing housing instability in our community. While our city invests in long-term solutions, we're here to provide immediate relief and innovative pathways to homeownership.</p>
-                    
-                    <p>Every dollar you contribute directly impacts real families, providing not just shelter, but stability, dignity, and the foundation for building better futures right here in Omaha.</p>
-                    
-                    <div class="campaign-goals">
-                        <div class="goal-item">
-                            <div class="goal-amount">$400,000</div>
-                            <div class="goal-description">Emergency Housing Fund - Preventing evictions and providing immediate housing stability for families in crisis</div>
-                
+  <div class="container">
+    <div class="card" aria-live="polite">
+      <div class="progress-wrap">
+        <div style="display:flex;gap:12px;align-items:end;flex-wrap:wrap">
+          <div>
+            <div style="font-weight:800;font-size:1.85rem" id="raised">$0</div>
+            <div class="label">of $1,000,000 goal</div>
+          </div>
+          <div style="margin-left:auto;font-weight:700;color:var(--muted)">
+            Campaign Day <span id="day">1</span>
+          </div>
+        </div>
+        <div class="progress" aria-label="Fundraising progress"><div id="bar" class="bar"></div></div>
+        <div class="stats">
+          <div class="stat"><div class="kpi" id="donors">0</div><div class="label">Donors</div></div>
+          <div class="stat"><div class="kpi" id="families">0</div><div class="label">Families on the path to home</div></div>
+          <div class="stat"><div class="kpi" id="daysLeft">365</div><div class="label">Days remaining</div></div>
+        </div>
+      </div>
+    </div>
+
+    <section id="how" class="grid" style="grid-template-columns:2fr 1fr;gap:22px">
+      <article class="card">
+        <h2>Why we act now</h2>
+        <p class="lead">Housing costs keep rising while paychecks don’t. Some respond by pushing people out of sight. We respond by pulling people into community — with dignity, housing, and care.</p>
+        <div class="grid goals">
+          <div class="goal"><strong>$400,000</strong><br/>Emergency Housing Fund – keep families housed and safe tonight.</div>
+          <div class="goal"><strong>$300,000</strong><br/>First Keys – down-payment help and coaching for first‑time buyers.</div>
+          <div class="goal"><strong>$200,000</strong><br/>Innovation Lab – tiny homes, ADUs, motel conversions.</div>
+          <div class="goal"><strong>$100,000</strong><br/>Operations & Impact – transparent delivery of every dollar.</div>
+        </div>
+      </article>
+
+      <aside class="card donate">
+        <h2 style="margin-bottom:6px">Make a gift</h2>
+        <div class="amounts" id="amounts">
+          <button class="chip" data-amt="25">$25</button>
+          <button class="chip" data-amt="50">$50</button>
+          <button class="chip" data-amt="100">$100</button>
+          <button class="chip" data-amt="250">$250</button>
+          <button class="chip" data-amt="500">$500</button>
+          <button class="chip" data-amt="1000">$1,000</button>
+        </div>
+        <div class="field">
+          <input id="custom" type="number" min="1" step="1" placeholder="Other amount (USD)" aria-label="Custom amount"/>
+          <button id="give" class="btn btn-primary" style="white-space:nowrap">Give</button>
+        </div>
+        <p class="label" style="margin-top:8px">Payments are processed securely by Stripe.</p>
+      </aside>
+    </section>
+
+    <section class="card">
+      <h2>What your gift makes possible</h2>
+      <p class="lead">From the first hot shower to a signed lease, your generosity fuels each step. When we invest in people, we don’t just reduce homelessness — we grow a stronger Omaha.</p>
+      <div class="grid goals">
+        <div class="goal"><strong>Street‑to‑Home</strong><br/>Rapid placements from encampments and cars into safe rooms and supportive housing.</div>
+        <div class="goal"><strong>Care, not cuffs</strong><br/>On‑site case managers connect neighbors to mental health and recovery care alongside housing.</div>
+        <div class="goal"><strong>Lasting stability</strong><br/>Financial coaching, job support, and tenant protections that keep families housed.</div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="foot">
+      <strong>Omaha Affordable Housing Campaign</strong>
+      <small>PacMac Mobile LLC • housing@P3Lending.space • 402‑915‑1434 • 1402 Jones St, Omaha, NE 68901</small>
+    </div>
+  </footer>
+
+  <script>
+    let stripe; // set after page loads
+    let selected = 50; // default for quick donate
+
+    function setActive(btn){
+      document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+      if(btn){btn.classList.add('active');}
+    }
+
+    async function updateStats(){
+      try{
+        const res = await fetch('/api/campaign-stats');
+        const data = await res.json();
+        const pct = Math.min(100, (data.currentAmount / data.goal) * 100);
+        document.getElementById('raised').textContent = `$${Number(data.currentAmount).toLocaleString()}`;
+        document.getElementById('donors').textContent = Number(data.donorCount).toLocaleString();
+        document.getElementById('families').textContent = Number(data.familiesHelped).toLocaleString();
+        document.getElementById('bar').style.width = pct + '%';
+
+        const start = new Date('2025-08-13');
+        const end = new Date('2026-08-13');
+        const today = new Date();
+        const day = Math.max(1, Math.ceil((today - start)/(1000*60*60*24)));
+        const daysLeft = Math.max(0, Math.ceil((end - today)/(1000*60*60*24)));
+        document.getElementById('day').textContent = day;
+        document.getElementById('daysLeft').textContent = daysLeft;
+      }catch(e){console.warn('Stats unavailable', e)}
+    }
+
+    async function createCheckout(amount){
+      const res = await fetch('/api/create-checkout-session',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({amount:amount})
+      });
+      if(!res.ok){throw new Error('Checkout session failed')}
+      const {url} = await res.json();
+      window.location.href = url;
+    }
+
+    function wireDonations(){
+      document.getElementById('donateNow').addEventListener('click',()=>createCheckout(selected));
+      document.getElementById('give').addEventListener('click',()=>{
+        const val = parseInt(document.getElementById('custom').value,10);
+        const amount = Number.isFinite(val) && val>0 ? val : selected;
+        createCheckout(amount).catch(()=>alert('Could not start checkout. Please try again.'));
+      });
+      document.querySelectorAll('.chip').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          selected = parseInt(btn.dataset.amt,10);
+          document.getElementById('custom').value = '';
+          setActive(btn);
+        });
+      });
+      // default select $50
+      const def = document.querySelector('.chip[data-amt="50"]');
+      if(def){setActive(def)}
+    }
+
+    function startCarousel(){
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let i = 0; setInterval(()=>{slides[i].classList.remove('active'); i=(i+1)%slides.length; slides[i].classList.add('active');}, 5200);
+    }
+
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      try{ stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}'); }catch(e){ console.warn('Stripe key missing'); }
+      await updateStats();
+      wireDonations();
+      startCarousel();
+    });
+  </script>
+</body>
+</html>
