@@ -29,6 +29,7 @@ app.use(helmet({
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use('/images', express.static('images'));
 
 // Stripe webhook endpoint
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
