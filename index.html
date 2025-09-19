@@ -22,16 +22,11 @@
     *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
     a{color:var(--brand-2);text-decoration:none}
 
-    /* Header Carousel */
+    /* Header */
     header.hero{position:relative;min-height:92vh;display:grid;place-items:center;overflow:hidden;color:#fff}
-    .slides{position:absolute;inset:0;display:grid}
-    .slide{position:absolute;inset:0;background-position:center;background-size:cover;filter:brightness(.65);opacity:0;transition:opacity 900ms ease}
-    .slide.active{opacity:1}
-    .scrim{position:absolute;inset:0;background:radial-gradient(1200px 600px at 50% 65%, transparent, rgba(0,0,0,.55))}
-    .hero-content{position:relative;z-index:2;max-width:1100px;padding:24px;text-align:center}
-    .eyebrow{display:inline-block;padding:.35rem .65rem;border-radius:999px;background:rgba(255,255,255,.15);backdrop-filter:blur(6px);font-weight:700;letter-spacing:.08em}
-    h1{font-size:clamp(2rem,5vw,4rem);margin:.75rem 0 1rem;font-weight:800}
-    .sub{font-size:clamp(1.05rem,2.5vw,1.35rem);opacity:.95;max-width:900px;margin:0 auto 1.25rem}
+    .hero-background{position:absolute;inset:0;background-position:center;background-size:cover;background-repeat:no-repeat}
+    .hero-fade{position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top, var(--bg) 0%, transparent 100%);z-index:1}
+    .hero-content{position:relative;z-index:2;max-width:1100px;padding:24px;text-align:center;margin-top:auto;padding-bottom:60px}
 
     .cta-row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
     .btn{appearance:none;border:0;border-radius:12px;padding:14px 22px;font-weight:800;cursor:pointer}
@@ -87,20 +82,11 @@
   </style>
 </head>
 <body>
-  <header class="hero" aria-label="Image carousel with call to action">
-    <div class="scrim" aria-hidden="true"></div>
-    <div class="slides" id="slides">
-      <div class="slide active" style="background-image:url('/images/20220507_004203.jpg')"></div>
-      <div class="slide" style="background-image:url('/images/20220507_004602.jpg')"></div>
-      <div class="slide" style="background-image:url('/images/20220507_005932.jpg')"></div>
-      <div class="slide" style="background-image:url('/images/2023-06-14.jpg')"></div>
-      <div class="slide" style="background-image:url('/images/IMG_1242.JPG')"></div>
-    </div>
+  <header class="hero" aria-label="Inspirational header with call to action">
+    <div class="hero-background" style="background-image:url('/images/20220507_004203.jpg')"></div>
+    <div class="hero-fade"></div>
 
     <div class="hero-content">
-      <span class="eyebrow">A Heart-Led Movement</span>
-      <h1>Every Neighbor Deserves a Safe Place to Sleep</h1>
-      <p class="sub">Together, we're building a community where families aren't punished for poverty and hope is stronger than hardship. Your gift moves a neighbor from the edge to home.</p>
       <div class="cta-row">
         <button id="donateNow" class="btn btn-primary">Donate Now</button>
         <a href="#how" class="btn btn-ghost">See how your gift helps</a>
@@ -295,16 +281,10 @@
       if(def){setActive(def)}
     }
 
-    function startCarousel(){
-      const slides = Array.from(document.querySelectorAll('.slide'));
-      let i = 0; setInterval(()=>{slides[i].classList.remove('active'); i=(i+1)%slides.length; slides[i].classList.add('active');}, 5200);
-    }
-
     document.addEventListener('DOMContentLoaded', async ()=>{
       try{ stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}'); }catch(e){ console.warn('Stripe key missing'); }
       await updateStats();
       wireDonations();
-      startCarousel();
     });
   </script>
 </body>
