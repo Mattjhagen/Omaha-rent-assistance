@@ -32,6 +32,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
+app.use('/styles.css', express.static('public/styles.css'));
 
 // Stripe webhook endpoint
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
@@ -127,6 +128,11 @@ app.get('/', (req, res) => {
 // Get campaign stats
 app.get('/api/campaign-stats', (req, res) => {
   res.json(campaignData);
+});
+
+// Get Stripe publishable key
+app.get('/api/stripe-key', (req, res) => {
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
 // Get detailed campaign metrics

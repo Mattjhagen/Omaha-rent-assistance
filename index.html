@@ -291,7 +291,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', async ()=>{
-      try{ stripe = Stripe('{{STRIPE_PUBLISHABLE_KEY}}'); }catch(e){ console.warn('Stripe key missing'); }
+      try{ 
+        const response = await fetch('/api/stripe-key');
+        const { publishableKey } = await response.json();
+        stripe = Stripe(publishableKey); 
+      }catch(e){ console.warn('Stripe key missing:', e); }
       await updateStats();
       wireDonations();
     });
