@@ -208,7 +208,9 @@
 
     async function updateStats(){
       try{
-        const res = await fetch('/api/campaign-stats');
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const res = await fetch(`${protocol}//${host}/api/campaign-stats`);
         const data = await res.json();
         const pct = Math.min(100, (data.currentAmount / data.goal) * 100);
         
@@ -262,7 +264,9 @@
     }
 
     async function createCheckout(amount){
-      const res = await fetch('/api/create-checkout-session',{
+      const protocol = window.location.protocol;
+      const host = window.location.host;
+      const res = await fetch(`${protocol}//${host}/api/create-checkout-session`,{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({amount:amount})
       });
@@ -292,7 +296,9 @@
 
     document.addEventListener('DOMContentLoaded', async ()=>{
       try{ 
-        const response = await fetch('/api/stripe-key');
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        const response = await fetch(`${protocol}//${host}/api/stripe-key`);
         const { publishableKey } = await response.json();
         stripe = Stripe(publishableKey); 
       }catch(e){ console.warn('Stripe key missing:', e); }
