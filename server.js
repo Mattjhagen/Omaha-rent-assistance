@@ -111,7 +111,7 @@ let campaignData = {
 
 // Routes
 app.get('/', (req, res) => {
-  const filePath = path.join(__dirname, 'public', 'index.html');
+  const filePath = path.join(__dirname, 'index.html');
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading index.html:', err);
@@ -257,7 +257,7 @@ app.get('/health', (req, res) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.status(404).sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Error handler
