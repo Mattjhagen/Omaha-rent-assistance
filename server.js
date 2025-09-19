@@ -282,6 +282,7 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Omaha Housing Initiative server running on port ${PORT}`);
+  console.log('🔧 Render deployment version 1.1');
   console.log(`📊 Current campaign total: $${campaignData.currentAmount.toLocaleString()}`);
   console.log(`👥 Total donors: ${campaignData.donorCount}`);
   
