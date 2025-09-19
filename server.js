@@ -19,7 +19,7 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://images.simplycodes.com", "https:"],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'", "https://api.stripe.com"],
       frameSrc: ["'self'", "https://www.youtube.com"],
@@ -28,7 +28,10 @@ app.use(helmet({
   }
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
