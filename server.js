@@ -49,10 +49,38 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
     case 'checkout.session.completed':
       const session = event.data.object;
       const amount = session.amount_total / 100; // Convert from cents
+      
+      // Update campaign data
       campaignData.currentAmount += amount;
       campaignData.donorCount += 1;
       campaignData.familiesHelped = Math.floor(campaignData.currentAmount / 2500);
-      console.log(`✅ New donation: ${amount} - Total: ${campaignData.currentAmount}`);
+      campaignData.averageDonation = campaignData.currentAmount / campaignData.donorCount;
+      campaignData.lastDonation = new Date().toISOString();
+      
+      // Check for milestones
+      const percentage = (campaignData.currentAmount / campaignData.goal) * 100;
+      if (percentage >= 10 && !campaignData.milestones['10%']) {
+        campaignData.milestones['10%'] = true;
+        console.log('🎉 Milestone reached: 10% of goal!');
+      }
+      if (percentage >= 25 && !campaignData.milestones['25%']) {
+        campaignData.milestones['25%'] = true;
+        console.log('🎉 Milestone reached: 25% of goal!');
+      }
+      if (percentage >= 50 && !campaignData.milestones['50%']) {
+        campaignData.milestones['50%'] = true;
+        console.log('🎉 Milestone reached: 50% of goal!');
+      }
+      if (percentage >= 75 && !campaignData.milestones['75%']) {
+        campaignData.milestones['75%'] = true;
+        console.log('🎉 Milestone reached: 75% of goal!');
+      }
+      if (percentage >= 100 && !campaignData.milestones['100%']) {
+        campaignData.milestones['100%'] = true;
+        console.log('🎉 GOAL ACHIEVED: 100% of $1M goal reached!');
+      }
+      
+      console.log(`✅ New donation: $${amount} - Total: $${campaignData.currentAmount.toLocaleString()} (${percentage.toFixed(1)}%)`);
       break;
     default:
       // Unexpected event type
@@ -68,7 +96,16 @@ let campaignData = {
   currentAmount: 12750,
   goal: 1000000,
   donorCount: 47,
-  familiesHelped: 5
+  familiesHelped: 5,
+  averageDonation: 271.28,
+  lastDonation: new Date().toISOString(),
+  milestones: {
+    '10%': false,
+    '25%': false,
+    '50%': false,
+    '75%': false,
+    '100%': false
+  }
 };
 
 // Routes
@@ -89,6 +126,25 @@ app.get('/api/campaign-stats', (req, res) => {
   res.json(campaignData);
 });
 
+// Get detailed campaign metrics
+app.get('/api/campaign-metrics', (req, res) => {
+  const percentage = (campaignData.currentAmount / campaignData.goal) * 100;
+  const remaining = campaignData.goal - campaignData.currentAmount;
+  const daysSinceStart = Math.ceil((new Date() - new Date('2025-01-01')) / (1000 * 60 * 60 * 24));
+  const averageDaily = campaignData.currentAmount / Math.max(1, daysSinceStart);
+  const projectedCompletion = remaining / Math.max(1, averageDaily);
+  
+  res.json({
+    ...campaignData,
+    percentage: Math.min(100, percentage),
+    remaining: Math.max(0, remaining),
+    daysSinceStart: Math.max(1, daysSinceStart),
+    averageDaily: averageDaily,
+    projectedCompletionDays: Math.ceil(projectedCompletion),
+    isOnTrack: percentage >= (daysSinceStart / 365) * 100
+  });
+});
+
 // Create payment intent
 
 
@@ -106,9 +162,34 @@ app.post('/api/payment-success', async (req, res) => {
       campaignData.currentAmount += donationAmount;
       campaignData.donorCount += 1;
       campaignData.familiesHelped = Math.floor(campaignData.currentAmount / 2500);
+      campaignData.averageDonation = campaignData.currentAmount / campaignData.donorCount;
+      campaignData.lastDonation = new Date().toISOString();
+
+      // Check for milestones
+      const percentage = (campaignData.currentAmount / campaignData.goal) * 100;
+      if (percentage >= 10 && !campaignData.milestones['10%']) {
+        campaignData.milestones['10%'] = true;
+        console.log('🎉 Milestone reached: 10% of goal!');
+      }
+      if (percentage >= 25 && !campaignData.milestones['25%']) {
+        campaignData.milestones['25%'] = true;
+        console.log('🎉 Milestone reached: 25% of goal!');
+      }
+      if (percentage >= 50 && !campaignData.milestones['50%']) {
+        campaignData.milestones['50%'] = true;
+        console.log('🎉 Milestone reached: 50% of goal!');
+      }
+      if (percentage >= 75 && !campaignData.milestones['75%']) {
+        campaignData.milestones['75%'] = true;
+        console.log('🎉 Milestone reached: 75% of goal!');
+      }
+      if (percentage >= 100 && !campaignData.milestones['100%']) {
+        campaignData.milestones['100%'] = true;
+        console.log('🎉 GOAL ACHIEVED: 100% of $1M goal reached!');
+      }
 
       // Log the donation (in production, save to database)
-      console.log(`New donation: $${donationAmount} - Total: $${campaignData.currentAmount}`);
+      console.log(`✅ New donation: $${donationAmount} - Total: $${campaignData.currentAmount.toLocaleString()} (${percentage.toFixed(1)}%)`);
 
       res.json({
         success: true,
